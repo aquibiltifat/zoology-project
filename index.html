@@ -753,3 +753,325 @@
 
         // Chart configurations
         Chart.defaults.font.size = 14;
+
+        // Regeneration Comparison Chart
+        new Chart(document.getElementById('regenerationComparison'), {
+            type: 'bar',
+            data: {
+                labels: ['Salamanders', 'Zebrafish', 'Mice (Digit Tips)', 'Adult Mammals', 'Adult Humans'],
+                datasets: [{
+                    label: 'Regenerative Capacity (%)',
+                    data: [100, 85, 30, 5, 2],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(118, 75, 162, 0.8)',
+                        'rgba(255, 159, 64, 0.8)',
+                        'rgba(255, 99, 132, 0.8)',
+                        'rgba(201, 203, 207, 0.8)'
+                    ],
+                    borderColor: [
+                        'rgba(102, 126, 234, 1)',
+                        'rgba(118, 75, 162, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(201, 203, 207, 1)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Regenerative Capacity Across Species',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { callback: value => value + '%' }
+                    }
+                }
+            }
+        });
+
+        // Experimental Design Chart
+        new Chart(document.getElementById('experimentalDesign'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Histological Analysis', 'Molecular Analysis', 'Cell Proliferation', 'Statistical Analysis'],
+                datasets: [{
+                    data: [30, 35, 20, 15],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(118, 75, 162, 0.8)',
+                        'rgba(240, 147, 251, 0.8)',
+                        'rgba(245, 87, 108, 0.8)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: {
+                        display: true,
+                        text: 'Research Effort Distribution',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                }
+            }
+        });
+
+        // Experimental Groups Chart
+        new Chart(document.getElementById('experimentalGroups'), {
+            type: 'bar',
+            data: {
+                labels: ['Day 0', 'Day 3', 'Day 7', 'Day 14', 'Day 21'],
+                datasets: [
+                    {
+                        label: 'Mid-Forearm (Wrist) Amputation',
+                        data: [3, 3, 3, 3, 3],
+                        backgroundColor: 'rgba(102, 126, 234, 0.7)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    },
+                    {
+                        label: 'Mid-Upper Arm (Elbow) Amputation',
+                        data: [3, 3, 3, 3, 3],
+                        backgroundColor: 'rgba(118, 75, 162, 0.7)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        borderWidth: 2
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Sample Size per Time Point and Group',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Number of Animals' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Time Points After Amputation' }
+                    }
+                }
+            }
+        });
+
+        // Project Timeline Chart
+        new Chart(document.getElementById('projectTimeline'), {
+            type: 'bar',
+            data: {
+                labels: ['Preparation', 'Experiments', 'Histology', 'Molecular Work', 'Data Analysis', 'Writing'],
+                datasets: [{
+                    label: 'Duration (Months)',
+                    data: [2, 2, 2, 2, 2, 2],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(118, 75, 162, 0.8)',
+                        'rgba(240, 147, 251, 0.8)',
+                        'rgba(245, 87, 108, 0.8)',
+                        'rgba(255, 159, 64, 0.8)',
+                        'rgba(75, 192, 192, 0.8)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                plugins: {
+                    legend: { display: false },
+                    title: {
+                        display: true,
+                        text: 'Project Phase Duration',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 3,
+                        title: { display: true, text: 'Months' }
+                    }
+                }
+            }
+        });
+
+        // Gene Expression Chart
+        new Chart(document.getElementById('geneExpression'), {
+            type: 'line',
+            data: {
+                labels: ['Day 0', 'Day 3', 'Day 7', 'Day 14', 'Day 21'],
+                datasets: [
+                    {
+                        label: 'Msx1 (Dedifferentiation)',
+                        data: [1, 3, 8, 5, 2],
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'Fgf8 (Growth Factor)',
+                        data: [1, 4, 7, 6, 3],
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        backgroundColor: 'rgba(118, 75, 162, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: 'MyoD (Muscle Differentiation)',
+                        data: [8, 4, 3, 5, 7],
+                        borderColor: 'rgba(240, 147, 251, 1)',
+                        backgroundColor: 'rgba(240, 147, 251, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Expected Gene Expression Dynamics',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Relative Expression Level' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Days Post-Amputation' }
+                    }
+                }
+            }
+        });
+
+        // Proliferation Chart
+        new Chart(document.getElementById('proliferationChart'), {
+            type: 'line',
+            data: {
+                labels: ['Day 0', 'Day 3', 'Day 7', 'Day 14', 'Day 21'],
+                datasets: [{
+                    label: 'BrdU+ Cells (%)',
+                    data: [2, 15, 55, 40, 20],
+                    borderColor: 'rgba(245, 87, 108, 1)',
+                    backgroundColor: 'rgba(245, 87, 108, 0.3)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 6,
+                    pointHoverRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Expected Cell Proliferation During Regeneration',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 70,
+                        title: { display: true, text: 'Percentage of Dividing Cells' }
+                    },
+                    x: {
+                        title: { display: true, text: 'Days Post-Amputation' }
+                    }
+                }
+            }
+        });
+
+        // Amputation Level Comparison
+        new Chart(document.getElementById('amputationComparison'), {
+            type: 'radar',
+            data: {
+                labels: ['Blastema Size', 'Hoxa9 Expression', 'Hoxa13 Expression', 'Regeneration Time', 'Pattern Complexity'],
+                datasets: [
+                    {
+                        label: 'Wrist Level Amputation',
+                        data: [4, 3, 9, 7, 5],
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        backgroundColor: 'rgba(102, 126, 234, 0.3)',
+                        pointRadius: 5
+                    },
+                    {
+                        label: 'Elbow Level Amputation',
+                        data: [8, 8, 4, 5, 8],
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        backgroundColor: 'rgba(118, 75, 162, 0.3)',
+                        pointRadius: 5
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Expected Differences Between Amputation Levels',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                }
+            }
+        });
+
+        // Budget Chart
+        new Chart(document.getElementById('budgetChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Animal Costs (12%)', 'Surgical (5%)', 'Histology (37%)', 'Molecular Biology (33%)', 'Misc & Contingency (13%)'],
+                datasets: [{
+                    data: [22500, 10000, 69000, 61000, 25000],
+                    backgroundColor: [
+                        'rgba(102, 126, 234, 0.8)',
+                        'rgba(118, 75, 162, 0.8)',
+                        'rgba(240, 147, 251, 0.8)',
+                        'rgba(245, 87, 108, 0.8)',
+                        'rgba(255, 159, 64, 0.8)'
+                    ],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: {
+                        display: true,
+                        text: 'Budget Distribution (Total: ₹1,87,500)',
+                        font: { size: 18, weight: 'bold' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
