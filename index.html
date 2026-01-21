@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cellular Reprogramming in Salamander Limb Regrowth</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.2em;
+            font-style: italic;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            animation: fadeIn 0.5s;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #667eea;
+            margin: 30px 0 15px 0;
+            font-size: 2em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+            font-size: 1.5em;
+        }
+
+        .chart-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            max-height: 400px;
+        }
+
+        .diagram-box {
+            background: linear-gradient(135deg, #e0e7ff 0%, #f3e7ff 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #667eea;
+        }
+
+        .timeline {
+            position: relative;
+            padding: 20px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .timeline-marker {
+            min-width: 100px;
+            font-weight: bold;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .timeline-content {
+            background: #f8f9fa;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+            flex: 1;
+        }
+
+        .objectives-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .objective-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: transform 0.3s;
+        }
+
+        .objective-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stats-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .process-flow {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .process-step {
+            background: white;
+            border: 3px solid #667eea;
+            padding: 20px;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: bold;
+            color: #667eea;
+            position: relative;
+            margin: 10px;
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -40px;
+            font-size: 2em;
+            color: #667eea;
+        }
+
+        .process-step:last-child::after {
+            content: '';
+        }
+
+        .highlight-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 5px solid #17a2b8;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        ul, ol {
+            margin-left: 30px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .budget-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .budget-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        .budget-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .budget-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .total-row {
+            background: #667eea;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8em; }
+            .process-step { width: 120px; height: 120px; }
+            .process-step::after { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🦎 Cellular Reprogramming and Positional Memory in Salamander Limb Regrowth</h1>
+            <p class="subtitle">A Comprehensive Research Project in Regenerative Biology</p>
+            <p style="margin-top: 15px; color: #888;">BSc Zoology | Third Year Research Project</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showTab('intro')">Introduction</button>
+            <button class="tab-btn" onclick="showTab('objectives')">Objectives</button>
+            <button class="tab-btn" onclick="showTab('methods')">Methods</button>
+            <button class="tab-btn" onclick="showTab('timeline')">Timeline</button>
+            <button class="tab-btn" onclick="showTab('results')">Expected Results</button>
+            <button class="tab-btn" onclick="showTab('budget')">Budget</button>
+            <button class="tab-btn" onclick="showTab('significance')">Significance</button>
+        </div>
+
+        <!-- Introduction Tab -->
+        <div id="intro" class="content-section active">
+            <h2>🔬 Introduction: The Marvel of Regeneration</h2>
+            
+            <p style="font-size: 1.1em; line-height: 1.8;">Salamanders possess an extraordinary ability that most vertebrates have lost: the power to regenerate entire limbs with perfect anatomical precision. This isn't just wound healing—it's complete reconstruction of bones, muscles, nerves, and blood vessels in their exact original form.</p>
+
+            <div class="diagram-box">
+                <h3>Why Study Salamander Regeneration?</h3>
+                <div class="stats-box">
+                    <div class="stat-item">
+                        <span class="stat-number">100%</span>
+                        <span>Complete Limb Regrowth</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">3-4</span>
+                        <span>Months to Full Regeneration</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">∞</span>
+                        <span>Times They Can Regenerate</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>The Mystery of Positional Memory</h3>
+            <p>When a salamander loses a limb, cells at the amputation site "remember" their position and rebuild only what's missing. A limb cut at the wrist regenerates just a hand, while one cut at the shoulder regenerates the entire limb.</p>
+
+            <div class="chart-container">
+                <canvas id="regenerationComparison"></canvas>
+            </div>
+
+            <div class="info-box">
+                <h3>🎯 Key Questions This Research Addresses:</h3>
+                <ul>
+                    <li>How do specialized cells change their identity to participate in regeneration?</li>
+                    <li>What molecular signals encode positional information?</li>
+                    <li>How is positional memory maintained during tissue regrowth?</li>
+                    <li>Can we apply these findings to human regenerative medicine?</li>
+                </ul>
+            </div>
+
+            <h3>The Regeneration Process</h3>
+            <div class="process-flow">
+                <div class="process-step">Limb Amputation</div>
+                <div class="process-step">Wound Healing</div>
+                <div class="process-step">Blastema Formation</div>
+                <div class="process-step">Cell Proliferation</div>
+                <div class="process-step">Redifferentiation</div>
+                <div class="process-step">Complete Limb</div>
+            </div>
+        </div>
+
+        <!-- Objectives Tab -->
+        <div id="objectives" class="content-section">
+            <h2>🎯 Research Objectives</h2>
+
+            <h3>Primary Objectives</h3>
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <h3 style="color: white;">Objective 1</h3>
+                    <p>Investigate the extent of cellular reprogramming in different tissue types during salamander limb regeneration.</p>
+                </div>
+                <div class="objective-card">
+                    <h3 style="color: white;">Objective 2</h3>
+                    <p>Identify the molecular markers of positional identity along the limb axis.</p>
+                </div>
+                <div class="objective-card">
+                    <h3 style="color: white;">Objective 3</h3>
+                    <p>Determine how positional memory is maintained during blastema formation.</p>
+                </div>
+            </div>
+
+            <h3>Secondary Objectives</h3>
+            <div class="diagram-box">
+                <ul style="font-size: 1.1em;">
+                    <li>Examine the timeline of cellular changes during the first two weeks following amputation</li>
+                    <li>Compare cellular behavior at different amputation levels (wrist versus elbow)</li>
+                    <li>Assess the plasticity of cells—whether mature cells can cross lineage boundaries</li>
+                    <li>Analyze proliferation patterns throughout the regeneration process</li>
+                </ul>
+            </div>
+
+            <div class="chart-container">
+                <h3>Experimental Design Overview</h3>
+                <canvas id="experimentalDesign"></canvas>
+            </div>
+        </div>
+
+        <!-- Methods Tab -->
+        <div id="methods" class="content-section">
+            <h2>🔬 Materials and Methods</h2>
+
+            <h3>Animal Model: Axolotl (Ambystoma mexicanum)</h3>
+            <div class="info-box">
+                <p><strong>Why Axolotls?</strong></p>
+                <ul>
+                    <li>Reliable and robust regeneration</li>
+                    <li>Aquatic habitat simplifies laboratory maintenance</li>
+                    <li>Larger size makes surgical procedures easier</li>
+                    <li>Well-established model in regeneration research</li>
+                </ul>
+            </div>
+
+            <h3>Experimental Groups</h3>
+            <div class="chart-container">
+                <canvas id="experimentalGroups"></canvas>
+            </div>
+
+            <h3>Sample Collection Timeline</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">Day 0</div>
+                    <div class="timeline-content">
+                        <strong>Control Tissue</strong>
+                        <p>Immediately post-amputation, baseline samples collected</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Day 3</div>
+                    <div class="timeline-content">
+                        <strong>Early Wound Healing</strong>
+                        <p>Epithelial migration, wound closure begins</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Day 7</div>
+                    <div class="timeline-content">
+                        <strong>Blastema Formation</strong>
+                        <p>Critical period - cells dedifferentiate and accumulate</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Day 14</div>
+                    <div class="timeline-content">
+                        <strong>Early Differentiation</strong>
+                        <p>Blastema cells begin specializing into tissue types</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Day 21</div>
+                    <div class="timeline-content">
+                        <strong>Advanced Regeneration</strong>
+                        <p>Tissue organization visible, structures forming</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Key Techniques</h3>
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <h3 style="color: white;">Histology</h3>
+                    <p>H&E staining, Masson's trichrome, immunofluorescence to visualize tissue architecture and cell types</p>
+                </div>
+                <div class="objective-card">
+                    <h3 style="color: white;">Molecular Analysis</h3>
+                    <p>qRT-PCR to measure gene expression of Hox genes, reprogramming markers, and lineage-specific genes</p>
+                </div>
+                <div class="objective-card">
+                    <h3 style="color: white;">Proliferation Assay</h3>
+                    <p>BrdU incorporation to identify actively dividing cells throughout regeneration</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Genes of Interest</h3>
+                <ul>
+                    <li><strong>Positional markers:</strong> Hoxa9, Hoxa11, Hoxa13, Meis1, Meis2</li>
+                    <li><strong>Reprogramming markers:</strong> Msx1, Msx2, Sox2, Fgf8, Fgf10</li>
+                    <li><strong>Lineage markers:</strong> MyoD (muscle), Sox9 (cartilage), Runx2 (bone)</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Timeline Tab -->
+        <div id="timeline" class="content-section">
+            <h2>📅 Project Timeline (12 Months)</h2>
+
+            <div class="chart-container">
+                <canvas id="projectTimeline"></canvas>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">Month 1-2</div>
+                    <div class="timeline-content">
+                        <strong>Preparation Phase</strong>
+                        <ul>
+                            <li>Obtain ethical clearance from IAEC</li>
+                            <li>Procure and acclimatize axolotls</li>
+                            <li>Set up housing systems</li>
+                            <li>Practice surgical techniques</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Month 3-4</div>
+                    <div class="timeline-content">
+                        <strong>Experimental Phase</strong>
+                        <ul>
+                            <li>Perform limb amputations</li>
+                            <li>Daily monitoring of regeneration</li>
+                            <li>Collect tissue samples at designated time points</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Month 5-6</div>
+                    <div class="timeline-content">
+                        <strong>Histological Analysis</strong>
+                        <ul>
+                            <li>Tissue processing and sectioning</li>
+                            <li>Staining procedures</li>
+                            <li>Microscopy and imaging</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Month 7-8</div>
+                    <div class="timeline-content">
+                        <strong>Molecular Analysis</strong>
+                        <ul>
+                            <li>RNA extraction</li>
+                            <li>qRT-PCR experiments</li>
+                            <li>Proliferation data analysis</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Month 9-10</div>
+                    <div class="timeline-content">
+                        <strong>Data Analysis</strong>
+                        <ul>
+                            <li>Statistical analyses</li>
+                            <li>Create figures and graphs</li>
+                            <li>Literature comparison</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Month 11-12</div>
+                    <div class="timeline-content">
+                        <strong>Writing & Presentation</strong>
+                        <ul>
+                            <li>Complete thesis writing</li>
+                            <li>Prepare research presentation</li>
+                            <li>Submit for publication</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Expected Results Tab -->
+        <div id="results" class="content-section">
+            <h2>📊 Expected Results</h2>
+
+            <h3>Gene Expression Dynamics</h3>
+            <div class="chart-container">
+                <canvas id="geneExpression"></canvas>
+            </div>
+
+            <h3>Cell Proliferation Patterns</h3>
+            <div class="chart-container">
+                <canvas id="proliferationChart"></canvas>
+            </div>
+
+            <div class="diagram-box">
+                <h3>Anticipated Findings</h3>
+                <ul style="font-size: 1.05em;">
+                    <li><strong>Positional Memory:</strong> Hox gene expression patterns will correspond to amputation level, confirming cells retain positional information</li>
+                    <li><strong>Cellular Reprogramming:</strong> Dedifferentiation markers (Msx1, Msx2) will peak at day 7 during active blastema formation</li>
+                    <li><strong>Lineage Restriction:</strong> Cells likely maintain some molecular memory of original identity, showing partial rather than complete dedifferentiation</li>
+                    <li><strong>Proliferation Surge:</strong> 40-60% of blastema cells will be actively dividing compared to <2% in mature tissue</li>
+                </ul>
+            </div>
+
+            <h3>Comparison Between Amputation Levels</h3>
+            <div class="chart-container">
+                <canvas id="amputationComparison"></canvas>
+            </div>
+
+            <div class="info-box">
+                <h3>Proposed Molecular Model</h3>
+                <p>Based on expected results, we propose that:</p>
+                <ol>
+                    <li>Cells at the amputation site retain positional identity through Hox gene expression</li>
+                    <li>Growth factor signaling (FGFs) establishes new positional gradients in the growing blastema</li>
+                    <li>The interaction between maintained proximal identity and newly established distal identity ensures precise regeneration</li>
+                    <li>Cells undergo partial reprogramming—becoming more plastic while retaining lineage memory</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Budget Tab -->
+        <div id="budget" class="content-section">
+            <h2>💰 Budget Estimate</h2>
+
+            <div class="chart-container">
+                <canvas id="budgetChart"></canvas>
+            </div>
+
+            <table class="budget-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Item</th>
+                        <th>Cost (₹)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Animal Costs</strong></td>
+                        <td>15 Axolotls + Maintenance</td>
+                        <td>22,500</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Surgical Supplies</strong></td>
+                        <td>Anesthetic, instruments, disposables</td>
+                        <td>10,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Histology</strong></td>
+                        <td>Fixatives, stains, antibodies, slides</td>
+                        <td>69,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Molecular Biology</strong></td>
+                        <td>RNA extraction, PCR, primers, BrdU</td>
+                        <td>61,000</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Miscellaneous</strong></td>
+                        <td>Consumables + Contingency (15%)</td>
+                        <td>25,000</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td colspan="2"><strong>TOTAL BUDGET</strong></td>
+                        <td><strong>₹1,87,500</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight-box">
+                <h3>💡 Cost Optimization Options</h3>
+                <p>If funding is limited, costs can be reduced by:</p>
+                <ul>
+                    <li>Focusing on fewer time points (e.g., Day 0, 7, and 14 only)</li>
+                    <li>Analyzing fewer molecular markers (prioritize Hox genes and 2-3 key markers)</li>
+                    <li>Reducing sample size (minimum 10 animals with 2 replicates per time point)</li>
+                    <li>Using more economical antibody alternatives or sharing with other labs</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Significance Tab -->
+        <div id="significance" class="content-section">
+            <h2>🌟 Significance of the Study</h2>
+
+            <div class="objectives-grid">
+                <div class="objective-card">
+                    <h3 style="color: white;">🏥 Biomedical Applications</h3>
+                    <p>Understanding regeneration mechanisms could lead to therapies for tissue restoration, wound healing, and potentially limb regrowth in humans</p>
+                </div>
+                <div class="objective-card">
+                    <h3 style="color: white;">🧬 Cellular Plasticity</h3>
+                    <p>Insights into natural cellular reprogramming without cancer risk, informing safer stem cell therapies</p>
+                </div>
+                <div class="objective-card">
+                    <h3 style="color: white;">🧪 Drug Development</h3>
+                    <p>Identifying key molecular pathways could reveal therapeutic targets for enhancing human tissue repair</p>
+                </div>
+            </div>
+
+            <h3>Potential Impact on Medicine</h3>
+            <div class="diagram-box">
+                <ul style="font-size: 1.1em;">
+                    <li><strong>Fingertip Regeneration:</strong> Young children can partially regrow fingertips—understanding salamanders might enhance this capability in adults</li>
+                    <li><strong>Scar Reduction:</strong> Salamanders regenerate without scarring; uncovering this mechanism could revolutionize wound treatment</li>
+                    <li><strong>Nerve Repair:</strong> Salamanders perfectly reconnect nerves during regeneration—a major challenge in human medicine</li>
+                    <li><strong>Cartilage Restoration:</strong> Could help treat arthritis and joint injuries by promoting cartilage regrowth</li>
+                </ul>
+            </div>
+
+            <h3>Evolutionary Insights</h3>
+            <div class="info-box">
+                <p><strong>Why did mammals lose regenerative capacity?</strong></p>
+                <p>Comparing regenerating and non-regenerating species reveals evolutionary trade-offs between:</p>
+                <ul>
+                    <li>Cancer prevention vs. regeneration</li>
+                    <li>Immune response vs. scar-free healing</li>
+                    <li>Metabolic efficiency vs. tissue plasticity</li>
+                </ul>
+                <p>Understanding these trade-offs might reveal what needs to change to restore regeneration in mammals.</p>
+            </div>
+
+            <h3>Educational Value</h3>
+            <p style="font-size: 1.1em; line-height: 1.8;">This project provides comprehensive training in:</p>
+            <div class="stats-box">
+                <div class="stat-item">
+                    <span style="font-size: 2em;">🔬</span>
+                    <p>Surgical Techniques & Animal Handling</p>
+                </div>
+                <div class="stat-item">
+                    <span style="font-size: 2em;">🧫</span>
+                    <p>Histology & Microscopy</p>
+                </div>
+                <div class="stat-item">
+                    <span style="font-size: 2em;">🧬</span>
+                    <p>Molecular Biology & PCR</p>
+                </div>
+                <div class="stat-item">
+                    <span style="font-size: 2em;">📊</span>
+                    <p>Data Analysis & Statistics</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎓 Personal Statement</h3>
+                <p style="font-style: italic; font-size: 1.05em;">As an undergraduate researcher, this project represents an opportunity to engage with fundamental questions in biology while developing skills crucial for any scientific career. The ability to witness regeneration firsthand—watching a limb grow from a mass of undifferentiated cells into a fully functional structure—would be both humbling and inspiring. This research could be my small contribution to eventually helping humans recover from devastating injuries.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        function showTab(tabId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Chart configurations
+        Chart.defaults.font.size = 14;
